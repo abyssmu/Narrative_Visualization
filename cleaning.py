@@ -1,5 +1,9 @@
-import pandas as pd
+import json
 import os
+import pandas as pd
+
+confirmed_file = 'total_us_daily_confirmed.csv'
+deaths_file = 'total_us_daily_deaths.csv'
 
 path = './csse_covid_19_daily_reports_us'
 files = os.listdir(path)
@@ -45,7 +49,8 @@ for filename in files:
 							'Testing_Rate',
 							'Hospitalization_Rate'], axis = 1)
 
-	temp[['Month', 'Day', 'Year']] = filename[:-4].split('-')
+	date = filename[:-4].split('-')
+	temp['Date'] = '.'.join([date[2], date[0], date[1]])
 
 	df = pd.concat([df, temp])
 
@@ -55,9 +60,22 @@ territories = ['American Samoa',
 					'Guam',
 					'Northern Mariana Islands',
 					'Puerto Rico',
+					'Recovered',
 					'Virgin Islands']
-df = df[~df['Province_State'].isin(territories)]
+df = df[~df['Province_State'].isin(territories)].reset_index(inplace = False)
+df = df.drop(['index'], axis = 1)
 
-df = df.sort_values(by = ['Year', 'Month', 'Day', 'Province_State'])
+confirmed = pd.DataFrame(df['Date'].unique(), columns = ['Date']).sort_values(by = 'Date').reset_index().drop('index', axis = 1)
+deaths = pd.DataFrame(df['Date'].unique(), columns = ['Date']).sort_values(by = 'Date').reset_index().drop('index', axis = 1)
 
-df.to_csv('total_us_daily_compiled.csv', index = False)
+df = df.sort_values(by = ['Date', 'Province_State'])
+df = df.groupby(by = 'Province_State')
+
+for state in df.groups.keys():
+	temp = df.get_group(state)
+
+	confirmed[state] = temp['Confirmed'].to_list()
+	deaths[state] = temp['Deaths'].to_list()
+
+confirmed.to_csv(confirmed_file, index = False)
+deaths.to_csv(deaths_file, index = False)

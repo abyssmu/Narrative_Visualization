@@ -3,6 +3,19 @@ const DEATHS_FILE = 'total_us_daily_deaths.csv';
 
 const DATA_FOLDER = 'data/';
 
+const GRAPH_MARGIN_HEIGHT = 0.05;
+const GRAPH_MARGIN_WIDTH = 0.01;
+
+const SVG_PERC_HEIGHT = 1.00 - GRAPH_MARGIN_HEIGHT;
+const SVG_PERC_WIDTH = 1.00 - GRAPH_MARGIN_WIDTH;
+const SVG_HEIGHT = window.innerHeight * SVG_PERC_HEIGHT;
+const SVG_WIDTH = window.innerWidth * SVG_PERC_WIDTH ;
+
+const MARGIN_LEFT = SVG_WIDTH * GRAPH_MARGIN_WIDTH * 5;
+const MARGIN_TOP = SVG_HEIGHT * GRAPH_MARGIN_HEIGHT;
+
+const TRANSITION_DURATION = 1000;
+
 var select_div;
 var svg;
 
@@ -15,8 +28,11 @@ var state_names = ['Alabama','Alaska','Arizona','Arkansas','California','Colorad
 					'Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah',
 					'Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
 
-var x_axis_variables = ['Date', 'Median Income', 'Population', 'Population Density', 'Land Area (km^2)'];
-var y_axis_variables = ['Confirmed Cumulative', 'Deaths Cumulative', 'Confirmed Daily', 'Deaths Daily'];
+var x_axis_variables = ['Date', 'Median Income', 'Population', 'Population Density', 'Land Area (km2)'];
+var y_axis_variables = ['Confirmed Cumulative', 'Confirmed Cumulative / Capita',
+						'Deaths Cumulative', 'Deaths Cumulative / Capita',
+						'Confirmed Daily', 'Confirmed Daily / Capita',
+						'Deaths Daily', 'Deaths Daily / Capita'];
 
 var state_id = '#state_select';
 var data_id = '#data_select';
@@ -43,9 +59,7 @@ function init()
 			.append('g')
 				.attr('transform', 'translate(' + MARGIN_LEFT + ',' + MARGIN_TOP + ')');
 
-	init_line_chart();
-
-	line_chart(DATA_FOLDER + d3.select(state_id).property('value') + '.csv');
+	load_chart();
 }
 
 function init_select_menu(id, data)
@@ -60,14 +74,29 @@ function init_select_menu(id, data)
 					.attr('value', function(d) { return d; });
 }
 
+function load_chart()
+{
+	var state = d3.select(state_id).property('value');
+	var filename = DATA_FOLDER + state + '.csv';
+	var x_value = d3.select(x_id).property('value');
+
+	if(x_value == 'Date')
+	{
+		clear_scatter_chart();
+		line_chart(filename);
+	}
+	else
+	{
+		clear_line_chart();
+		scatter_plot();
+	}
+}
+
 function select_menu_add_on(id)
 {
 	d3.select(id)
 		.on('change', function(event, d)
 		{
-			var state = d3.select(state_id).property('value');
-			var filename = DATA_FOLDER + state + '.csv';
-
-			line_chart(filename);
+			load_chart();
 		});	
 }

@@ -156,7 +156,14 @@ for i in range(len(daily_reports)):
 
 	state_land = land_area[mask].iloc[0]['km2']
 
-	daily_reports[i]['Income'] = state_income
+	capita = 1e5
+
+	daily_reports[i]['Confirmed Cumulative / Capita'] = daily_reports[i]['Confirmed Cumulative'] / capita
+	daily_reports[i]['Deaths Cumulative / Capita'] = daily_reports[i]['Deaths Cumulative'] / capita
+	daily_reports[i]['Confirmed Daily / Capita'] = daily_reports[i]['Confirmed Daily'] / capita
+	daily_reports[i]['Deaths Daily / Capita'] = daily_reports[i]['Deaths Daily'] / capita
+
+	daily_reports[i]['Median Income'] = state_income
 	daily_reports[i]['Population'] = state_pop
 	daily_reports[i]['Land Area (km2)'] = state_land
 

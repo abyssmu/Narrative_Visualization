@@ -1,4 +1,4 @@
-// The portion of this code that handles the chart transitions was adapted from here:
+// The portion of this code that handles the chart transitions was adapted from:
 // https://d3-graph-gallery.com/graph/line_select.html
 
 // The portion that is responsible for projecting the cursor coordinates onto the line was adapted from:
@@ -23,7 +23,7 @@ function init_line_chart()
 	if(focus == null)
 	{
 		focus = svg.append('g')
-					.attr('id', 'focus')
+						.attr('id', 'focus')
 					.append('circle')
 						.style('fill', 'black')
 						.attr('stroke', 'black')
@@ -33,12 +33,18 @@ function init_line_chart()
 
 	if(focus_text == null)
 	{
-		focus_text = svg.append('g')
-						.attr('id', 'focus_text')
-						.append('text')
+		focus_text = d3.select('body')
+						.append('div')
+							.attr('id', 'focus_text')
 							.style('opacity', 0)
-							.attr('text-anchor', 'left')
-							.attr('alignment-baseline', 'middle');
+							.style('background-color', TOOLTIP_COLOR)
+							.style('border', 'solid')
+							.style('border-width', '1px')
+							.style('border-radius', '5px')
+							.style('padding', '10px')
+							.style('position', 'absolute')
+							.style('left', 0)
+							.style('top', 0);
 	}
 }
 
@@ -61,16 +67,6 @@ function update_line(data)
 						.x(function(d) { return x(d.x); })
 						.y(function(d) { return y(d.y); }));
 
-	svg.append('rect')
-		.attr('id', 'focus_rect')
-		.style('fill', 'none')
-		.style('pointer-events', 'all')
-		.attr('width', SVG_WIDTH - MARGIN_LEFT)
-		.attr('height', SVG_HEIGHT - MARGIN_TOP * 2)
-		.on('mouseover', mouseover)
-		.on('mousemove', mousemove)
-		.on('mouseout', mouseout);
-
 	function mouseover()
 	{
 		focus.style('opacity', 1);
@@ -88,20 +84,18 @@ function update_line(data)
 		if(d3.select(x_id).property('value') == 'Date') focus_text.html('Day: ' + d3.timeFormat('%d.%b.%y')(selected_data.x) + ': ' + selected_data.y);
 		else focus_text.html('Day: ' + selected_data.x + ': ' + selected_data.y);
 
-		var w = focus_text.node().getBBox().width;
-		var end_x = x(selected_data.x) + w;
-		var start_x = x(selected_data.x) + 15;
-		var start_y = y(selected_data.y) + 25;
-		var edge = SVG_WIDTH - MARGIN_LEFT - 20;
+		var start_x = x(selected_data.x) + 110;
+		var start_y = y(selected_data.y) + 80;
+		var end_x = start_x + d3.select('#focus_text').node().getBoundingClientRect().width;
 
-		if(end_x >=	edge)
+		if(end_x >=	SVG_WIDTH)
 		{
-			start_x += edge - end_x;
+			start_x += SVG_WIDTH - end_x;
 			start_y += 20;
 		}
 
-		focus_text.attr('x', start_x)
-					.attr('y', start_y);
+		focus_text.style('left', start_x + 'px')
+					.style('top', start_y + 'px');
 	};
 
 	function mouseout()
@@ -111,4 +105,14 @@ function update_line(data)
 	};
 
 	line.exit().remove();
+
+	svg.append('rect')
+		.attr('id', 'focus_rect')
+		.style('fill', 'none')
+		.style('pointer-events', 'all')
+		.attr('width', d3.select('path').node().getBBox().width)
+		.attr('height', SVG_HEIGHT - MARGIN_TOP * 2)
+		.on('mouseover', mouseover)
+		.on('mousemove', mousemove)
+		.on('mouseout', mouseout);
 }

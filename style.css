@@ -1,0 +1,165 @@
+#select_div
+{
+	width: 100%;
+	height: 2.5%;
+	display: flex;
+	gap: 20px;
+}
+
+#state_div, #y_axis_div,
+#x_axis_div, #color_axis_div
+{
+	width: 100%;
+	display: flex;
+}
+
+select
+{
+	width: 70%;
+}
+
+#slideshow
+{
+	width: 94%;
+	height: 92%;
+	z-index: 10;
+	position: absolute;
+	background-color: grey;
+	left: 1%;
+	top: 4%;
+	padding: 10px;
+}
+
+#page
+{
+	width: 100%;
+	height: 100%;
+	display: grid;
+	grid: "top top top" 0.1fr
+			"left . right" 1fr
+			/ 0.5fr 0fr 0.5fr;
+	gap: 8px;
+}
+
+#top
+{
+	grid-area: top;
+	background-color: #cccccc;
+}
+
+#left
+{
+	grid-area: left;
+}
+
+#right
+{
+	grid-area: right;
+}
+
+#left, #right
+{
+	background-color: white;
+	border: 1px solid black;
+	padding: 20px;
+}
+
+#button_container
+{
+	width: 50%;
+	height: 100%;
+	border: 1px solid black;
+}
+
+#exit
+{
+	width: 5%;
+	height: 8%;
+	top: 0%;
+	left: 95%;
+	z-index: 100;
+	position: absolute;
+	background-image: url('./images/x.png');
+	background-size: auto;
+	background-repeat: no-repeat;
+	transform: rotate(45deg) translate(0%, 50%);
+	filter: brightness(10%);
+}
+
+h1
+{
+	text-align: center;
+}
+
+p
+{
+	padding: 40px;
+	max-width: 100% - 80px;
+}
+
+img
+{
+	width: 90%;
+	height: auto;
+	position: relative;
+	top: 2.5%;
+	left: 5%;
+}
+
+/*
+	Button #6 adapted from
+	https://getcssscan.com/css-buttons-examples
+*/
+
+button
+{
+	position: relative;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+
+	align-items: center;
+	background-color: #FFFFFF;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: .25rem;
+	box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+	box-sizing: border-box;
+	cursor: pointer;
+	display: inline-flex;
+	font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 16px;
+	font-weight: 600;
+	justify-content: center;
+	line-height: 1.25;
+	margin: 0;
+	min-height: 3rem;
+	padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+	text-decoration: none;
+	transition: all 250ms;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+	vertical-align: baseline;
+	width: auto;
+}
+
+button:hover, button:focus
+{
+	border-color: rgba(0, 0, 0, 0.15);
+	box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+	color: rgba(0, 0, 0, 0.65);
+}
+
+button:active
+{
+	background-color: #F0F0F1;
+	border-color: rgba(0, 0, 0, 0.15);
+	box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+	color: rgba(0, 0, 0, 0.65);
+}
+
+button:disabled, button[disabled]
+{
+	background-color: #bdbdbd;
+	color: #a8a8a8;
+}
